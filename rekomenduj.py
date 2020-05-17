@@ -2,7 +2,7 @@
 
 import collections
 import pickle
-import readline
+from pyreadline import Readline as readline
 import sys
 
 from sklearn.metrics import pairwise
