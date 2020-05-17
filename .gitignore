@@ -127,3 +127,6 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Artykuły SQL Lite
+artykuly.sqlite3

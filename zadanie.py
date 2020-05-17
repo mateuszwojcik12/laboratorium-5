@@ -24,13 +24,15 @@ pani, po, pod, podczas, pomimo, ponad, ponieważ, powinien, powinna, powinni, po
 również, sama, są, się, skąd, sobie, sobą, sposób, swoje, ta, tak, taka, taki, takie, także, tam, te, tego, tej, temu, ten, teraz, 
 też, to, tobą, tobie, toteż, trzeba, tu, tutaj, twoi, twoim, twoja, twoje, twym, twój, ty, tych, tylko, tym, u, w, wam, wami, was, wasz, 
 wasza, wasze, we, według, wiele, wielu, więc, więcej, wszyscy, wszystkich, wszystkie, wszystkim, wszystko, wtedy, wy, właśnie, z, za, zapewne, 
-zawsze, ze, zł, znowu, znów, został, żaden, żadna, żadne, żadnych, że, żeby
+zawsze, ze, zł, znowu, znów, został, żaden, żadna, żadne, żadnych, że, żeby, kategoria, roku, linki, zewnętrzne, filmy, na, się, film, obsada, reżyserii, 
+do, amerykańskie, przypisy, jest, filmu, przez, jako, od, nie, fabuła
 """.split(',')
 STOP_WORDS = [w.strip() for w in STOP_WORDS if w.strip()]
 
 # TU(11b): Nie likwidować liczb.
 NONLETTERS_RE = re.compile(
-    r'[0-9’“„”«»…–—!"#$%&\'()*+,\-./:;?@\[\\\]^_`{|}~<=>]')
+    r'[’“„”«»…–—!"#$%&\'()*+,\-./:;?@\[\\\]^_`{|}~<=>]')
+    # r'[0-9’“„”«»…–—!"#$%&\'()*+,\-./:;?@\[\\\]^_`{|}~<=>]')
 
 
 def main():
@@ -42,14 +44,16 @@ def main():
     for row in connection.execute('SELECT title, text FROM Articles'):
         titles.append(row[0])
         # TU(11c): zmienić keep_template_params na True.
-        text = mwp.parse(row[1]).strip_code(keep_template_params=False)
+        text = mwp.parse(row[1]).strip_code(keep_template_params=True)
         text = NONLETTERS_RE.sub(' ', text)
         texts.append(text)
     logging.info('Tworzenie modelu. To potrwa do pół minuty.')
     # TU(10b): Zamienić na TfidfVectorizer.
     vectorizer = TfidfVectorizer(
-        analyzer='word',
-        min_df=3
+        analyzer='char_wb',
+        min_df=3,
+        ngram_range=(5, 5),
+        max_features=40_000
     # TU(10a): Dopisać stop_words=STOP_WORDS.
     # TU(11d): Zmienić analyzer na 'char_wb',
     # dopisać ngram_range=(5, 5)
