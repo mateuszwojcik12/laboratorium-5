@@ -2,7 +2,7 @@
 
 import collections
 import pickle
-from pyreadline import Readline as readline
+import readline
 import sys
 
 from sklearn.metrics import pairwise
@@ -13,7 +13,7 @@ def normalize(title):
 
 
 class Completer:
-    
+
     def __init__(self, titles):
         self.titles = collections.defaultdict(list)
         for title in titles:
@@ -29,7 +29,7 @@ class Completer:
 
 
 def main():
-    model = 'model.pickle' if len(sys.argv) < 2 else sys.argv[1]
+    model = 'baseline.pickle' if len(sys.argv) < 2 else sys.argv[1]
     with open(model, 'rb') as file:
         titles = pickle.load(file)
         X = pickle.load(file)
